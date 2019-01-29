@@ -1,0 +1,6 @@
+push int32(2)
+3 push int32(3)
+4 add
+5 assert int32(5)
+6 dump
+7 exit
