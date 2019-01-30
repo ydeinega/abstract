@@ -32,7 +32,12 @@ Avm & Avm::operator=(Avm const & src) {
 void	Avm::parse(std::string str) {
 
 	std::cmatch result;
-	std::regex	regular("push ([-]?[0-9]+[\\.]?[0-9]*)");
+	// std::regex	regular("(?:(push|assert) (int8|int16|int32|float|double)\\(([-]?[0-9]+[\\.]?[0-9]*)\\))|\
+	// 	(pop|dump|add|sub|mul|div|mod|print|exit|min|max|average|sort_asc|sort_desc)");
+
+	std::regex	regular("(?:(push|assert) (((int8|int16|int32)\\(([-]?[0-9]+)\\)))|\
+		((float|double)\\(([-]?[0-9]+\\.[0-9]+)\\))))|\
+		(pop|dump|add|sub|mul|div|mod|print|exit|min|max|average|sort_asc|sort_desc)");
 	
 	if (std::regex_match(str.c_str(), result, regular))
 		std::cout << "yes" << std::endl;
