@@ -28,5 +28,14 @@ Avm & Avm::operator=(Avm const & src) {
 
 	return *this;
 }
- 
 
+void	Avm::parse(std::string str) {
+
+	std::cmatch result;
+	std::regex	regular("push ([-]?[0-9]+[\\.]?[0-9]*)");
+	
+	if (std::regex_match(str.c_str(), result, regular))
+		std::cout << "yes" << std::endl;
+	else
+		std::cout << "no" << std::endl;
+}

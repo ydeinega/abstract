@@ -28,6 +28,7 @@ int		main(int argc, char **argv)
 			if (str == ";;")
 				break ;
 			vm.str.push_back(str);
+			vm.parse(str);
 			// std::cout << str << std::endl;
 		}
 	}
@@ -35,7 +36,10 @@ int		main(int argc, char **argv)
 	{
 		std::ifstream ifs(argv[1]);
 		while (std::getline(ifs, str))
+		{
 			vm.str.push_back(str);
+			vm.parse(str);
+		}
 			// std::cout << str << std::endl;
 	}
 	else
