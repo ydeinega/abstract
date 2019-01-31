@@ -35,12 +35,27 @@ void	Avm::parse(std::string str) {
 	// std::regex	regular("(?:(push|assert) (int8|int16|int32|float|double)\\(([-]?[0-9]+[\\.]?[0-9]*)\\))|\
 	// 	(pop|dump|add|sub|mul|div|mod|print|exit|min|max|average|sort_asc|sort_desc)");
 
-	std::regex	regular("(?:(push|assert) (((int8|int16|int32)\\(([-]?[0-9]+)\\)))|\
-		((float|double)\\(([-]?[0-9]+\\.[0-9]+)\\))))|\
-		(pop|dump|add|sub|mul|div|mod|print|exit|min|max|average|sort_asc|sort_desc)");
+	//In the end comment
+
+	std::regex	regex_1("[ \t]*(push|assert)[ \t]+(int8|int16|int32)\\(([-]?[0-9]+)\\)[ \t]*(;[\\w\\W]*)?");
+	std::regex	regex_2("[ \t]*(push|assert)[ \t]+(float|double)\\(([-]?[0-9]+\\.[0-9]+)\\)[ \t]*(;[\\w\\W]*)?");
+	std::regex	regex_3("[ \t]*(pop|dump|add|sub|mul|div|mod|print|exit|min|max|average|sort_asc|sort_desc)[ \t]*(;[\\w\\W]*)?");
+	std::regex	regex_4("[ \t]*;[\\w\\W]*");
+
+
+	//std::regex	regular("(?:(push|assert) (int8|int16|int32|float|double)\\(([-]?[0-9]+[\\.]?[0-9]*)\\))|(pop|dump|add|sub|mul|div|mod|print|exit|min|max|average|sort_asc|sort_desc)");
 	
-	if (std::regex_match(str.c_str(), result, regular))
+	if (std::regex_match(str.c_str(), result, regex_1) ||
+		std::regex_match(str.c_str(), result, regex_2) ||
+		std::regex_match(str.c_str(), result, regex_3) ||
+		std::regex_match(str.c_str(), result, regex_4))
 		std::cout << "yes" << std::endl;
 	else
 		std::cout << "no" << std::endl;
+
+
+	for(int i = 0; i < result.size(); i++)
+	{
+		std::cout << i << " = " << result[i] << std::endl;
+	}
 }
