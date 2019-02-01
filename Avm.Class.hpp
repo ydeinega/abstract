@@ -18,8 +18,10 @@
 # include <fstream>
 # include <iostream>
 # include <regex>
+# include <exception>
 //# include "IOperand.Class.hpp"
 //# include "Operand.Class.hpp"
+# include "AvmException.Class.hpp"
 
 class Avm {
 
@@ -58,8 +60,9 @@ public:
 	std::vector<std::string> str;
 	//std::vector<IOperand> stack;
 private:
-	int	_stack_size;//when i push an element on stack i'll add one to it
-	
+	int							_stack_size;//when i push an element on stack i'll add one to it
+	std::vector<std::cmatch>	_parse;
+	int							_line;
 	//vector in which i'll store all the strings
 	//vector in which i'll store ioperands (when i start pushing on stack)
 	
