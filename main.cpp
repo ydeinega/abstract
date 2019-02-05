@@ -27,7 +27,6 @@ int		main(int argc, char **argv)
 			
 			if (str == ";;")
 				break ;
-			vm.str.push_back(str);
 			vm.parse(str);
 			// std::cout << str << std::endl;
 		}
@@ -37,7 +36,6 @@ int		main(int argc, char **argv)
 		std::ifstream ifs(argv[1]);
 		while (std::getline(ifs, str))
 		{
-			vm.str.push_back(str);
 			vm.parse(str);
 		}
 			// std::cout << str << std::endl;
@@ -48,9 +46,11 @@ int		main(int argc, char **argv)
 					<< "(in this case you should pass only one argument - name of the file"
 					<< std::endl;
 
-	std::cout << "The vector elememnts are: " << std::endl;
-	for (size_t i = 0; i < vm.str.size(); i++)
-	{
-		std::cout << vm.str[i] << std::endl;
-	}
+	// std::cout << "The vector elememnts are: " << std::endl;
+	// for (size_t i = 0; i < vm.str.size(); i++)
+	// {
+	// 	std::cout << vm.str[i] << std::endl;
+	// }
+	//vm.print_str();
+	vm.execute();
 }

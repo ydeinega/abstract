@@ -15,4 +15,7 @@
 AvmException::AvmException(void) {}
 AvmException::~AvmException(void) {}
 
-const char * AvmException::BasicError::what(int line) const throw() { return(("Lexical/syntactic error or unknown instruction" + std::to_string(line)).c_str()); }
+const char * AvmException::BasicError::what() const throw() { 
+
+	return("Lexical/syntactic error or unknown instruction");
+}

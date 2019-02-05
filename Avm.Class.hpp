@@ -19,6 +19,7 @@
 # include <iostream>
 # include <regex>
 # include <exception>
+# include <map>
 //# include "IOperand.Class.hpp"
 //# include "Operand.Class.hpp"
 # include "AvmException.Class.hpp"
@@ -33,6 +34,10 @@ public:
 	
 	Avm &	operator=(Avm const & src);
 
+	void	pop(void);
+	void	dump(void);
+	void	push(void);
+	//void	assert(void);
 /*
 	void	push(std::string value);//here maybe i will need other things to accept
 	void	pop(void);
@@ -56,13 +61,15 @@ public:
 	
 */
 	void	parse(std::string str);
-
-	std::vector<std::string> str;
-	//std::vector<IOperand> stack;
+	void	execute(void);
+	void	print_str(void);
+	
+	
 private:
 	int							_stack_size;//when i push an element on stack i'll add one to it
-	std::vector<std::cmatch>	_parse;
+	//std::vector<IOperand> 		_stack;
 	int							_line;
+	std::vector<std::string>	_str;
 	//vector in which i'll store all the strings
 	//vector in which i'll store ioperands (when i start pushing on stack)
 	

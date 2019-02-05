@@ -34,45 +34,103 @@ void	Avm::parse(std::string str) {
 	std::cmatch result;
 
 	_line += 1;
-	// std::regex	regular("(?:(push|assert) (int8|int16|int32|float|double)\\(([-]?[0-9]+[\\.]?[0-9]*)\\))|\
-	// 	(pop|dump|add|sub|mul|div|mod|print|exit|min|max|average|sort_asc|sort_desc)");
+
 	std::regex	regex_1("[ \t]*(push|assert)[ \t]+(int8|int16|int32)\\(([-]?[0-9]+)\\)[ \t]*(;[\\w\\W]*)?");
 	std::regex	regex_2("[ \t]*(push|assert)[ \t]+(float|double)\\(([-]?[0-9]+\\.[0-9]+)\\)[ \t]*(;[\\w\\W]*)?");
 	std::regex	regex_3("[ \t]*(pop|dump|add|sub|mul|div|mod|print|exit|min|max|average|sort_asc|sort_desc)[ \t]*(;[\\w\\W]*)?");
 	std::regex	regex_4("[ \t]*;[\\w\\W]*");
 
-
-	//std::regex	regular("(?:(push|assert) (int8|int16|int32|float|double)\\(([-]?[0-9]+[\\.]?[0-9]*)\\))|(pop|dump|add|sub|mul|div|mod|print|exit|min|max|average|sort_asc|sort_desc)");
-	
-	//try and throw exception
-	//if all is fine I will push_back the result in vector
-	//if not I throw exception
 	try
 	{
-		if (std::regex_match(str.c_str(), result, regex_1) ||
-			std::regex_match(str.c_str(), result, regex_2) ||
-			std::regex_match(str.c_str(), result, regex_3) ||
-			std::regex_match(str.c_str(), result, regex_4))
-			_parse.push_back(result);
-		else
-			throw AvmException::BasicError(_line);
+		if (!std::regex_match(str.c_str(), result, regex_1) &&
+			!std::regex_match(str.c_str(), result, regex_2) &&
+			!std::regex_match(str.c_str(), result, regex_3) &&
+			!std::regex_match(str.c_str(), result, regex_4))
+			throw AvmException::BasicError();
 	}
 	catch(std::exception & e)
 	{
 		std::cout << "Line " << _line << " : " << e.what() << std::endl;
 	}
-
-	// if (std::regex_match(str.c_str(), result, regex_1) ||
-	// 	std::regex_match(str.c_str(), result, regex_2) ||
-	// 	std::regex_match(str.c_str(), result, regex_3) ||
-	// 	std::regex_match(str.c_str(), result, regex_4))
-	// 	std::cout << "yes" << std::endl;
-	// else
-	// 	std::cout << "no" << std::endl;
+	_str.push_back(str);
 
 	//iterating through result
-	for(int i = 0; i < result.size(); i++)
+	// for(int i = 0; i < result.size(); i++)
+	// {
+	// 	std::cout << i << " = " << result[i] << std::endl;
+	// }
+}
+
+void	Avm::execute(void) {
+
+	std::cmatch result;
+	
+	std::regex	regex_1("[ \t]*(push|assert)[ \t]+(int8|int16|int32)\\(([-]?[0-9]+)\\)[ \t]*(;[\\w\\W]*)?");
+	std::regex	regex_2("[ \t]*(push|assert)[ \t]+(float|double)\\(([-]?[0-9]+\\.[0-9]+)\\)[ \t]*(;[\\w\\W]*)?");
+	std::regex	regex_3("[ \t]*(pop|dump|add|sub|mul|div|mod|print|exit|min|max|average|sort_asc|sort_desc)[ \t]*(;[\\w\\W]*)?");
+
+	// std::map<std::string, int> my_map = {
+	// { "push",		0 },
+	// { "pop",		1 },
+	// { "dump", 		2 },
+	// { "assert",		3 },
+	// { "add",		4 },
+	// { "sub",		5 },
+	// { "mul",		6 },
+	// { "div",		7 },
+	// { "mod",		8 },
+	// { "print",		9 },
+	// { "min",		10 },
+	// { "max",		11 },
+	// { "average",	12 },
+	// { "sort_asc",	13 },
+	// { "sort_desc",	14 },
+	// };
+	typedef void (Avm::*funcptr)(void);
+	std::map<std::string, funcptr> my_map = {
+	{ "push",		&Avm::push		},
+	{ "pop",		&Avm::pop		},
+	{ "dump", 		&Avm::dump		},
+	// { "assert",		&Avm::assert	}
+	// { "add",		4 },
+	// { "sub",		5 },
+	// { "mul",		6 },
+	// { "div",		7 },
+	// { "mod",		8 },
+	// { "print",		9 },
+	// { "min",		10 },
+	// { "max",		11 },
+	// { "average",	12 },
+	// { "sort_asc",	13 },
+	// { "sort_desc",	14 },
+	};
+
+	for(std::vector<std::string>::iterator it = _str.begin(); 
+		it != _str.end(); ++it)
 	{
-		std::cout << i << " = " << result[i] << std::endl;
+		if (std::regex_match(it->c_str(), result, regex_1) ||
+			std::regex_match(it->c_str(), result, regex_2) ||
+			std::regex_match(it->c_str(), result, regex_3))
+		{
+			
+			std::map<std::string, funcptr>::iterator it_map = my_map.find(result[1]);
+			if (it_map != my_map.end())
+			{
+				std::cout << it_map->first << " is command" << std::endl;
+				this->*(it_map->second)();
+			}
+			//iterating through result
+		}
 	}
 }
+
+void	Avm::print_str(void) {
+	for(std::vector<std::string>::iterator it = _str.begin(); 
+		it != _str.end(); ++it)
+		std::cout << *it << std:: endl;
+}
+
+void	Avm::pop(void) {std::cout << "pop is called" << std::endl; }
+void	Avm::dump(void) {std::cout << "dump is called" << std::endl; }
+void	Avm::push(void) {std::cout << "push is called" << std::endl; }
+//void	Avm::assert(void) {std::cout << "assert is called" << std::endl; }
