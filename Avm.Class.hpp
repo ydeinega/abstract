@@ -40,14 +40,14 @@ public:
 	//void	assert(void);
 /*
 	void	push(std::string value);//here maybe i will need other things to accept
-	void	pop(void);
-	void	dump(void) const;
 	void	assert(std::string value) const;
+	void	pop(void);
 	void	add(void);
 	void	sub(void);
 	void	mul(void);
 	void	div(void);
 	void	mod(void);
+	void	dump(void) const;
 	void	print(void) const;
 	void	exit(void) const;
 

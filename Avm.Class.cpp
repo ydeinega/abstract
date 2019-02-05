@@ -69,28 +69,12 @@ void	Avm::execute(void) {
 	std::regex	regex_2("[ \t]*(push|assert)[ \t]+(float|double)\\(([-]?[0-9]+\\.[0-9]+)\\)[ \t]*(;[\\w\\W]*)?");
 	std::regex	regex_3("[ \t]*(pop|dump|add|sub|mul|div|mod|print|exit|min|max|average|sort_asc|sort_desc)[ \t]*(;[\\w\\W]*)?");
 
-	// std::map<std::string, int> my_map = {
-	// { "push",		0 },
-	// { "pop",		1 },
-	// { "dump", 		2 },
-	// { "assert",		3 },
-	// { "add",		4 },
-	// { "sub",		5 },
-	// { "mul",		6 },
-	// { "div",		7 },
-	// { "mod",		8 },
-	// { "print",		9 },
-	// { "min",		10 },
-	// { "max",		11 },
-	// { "average",	12 },
-	// { "sort_asc",	13 },
-	// { "sort_desc",	14 },
-	// };
 	typedef void (Avm::*funcptr)(void);
+	//std::map<std::string, void (Avm::*)(void)> my_map = {
 	std::map<std::string, funcptr> my_map = {
 	{ "push",		&Avm::push		},
 	{ "pop",		&Avm::pop		},
-	{ "dump", 		&Avm::dump		},
+	{ "dump", 		&Avm::dump		}
 	// { "assert",		&Avm::assert	}
 	// { "add",		4 },
 	// { "sub",		5 },
@@ -113,11 +97,17 @@ void	Avm::execute(void) {
 			std::regex_match(it->c_str(), result, regex_3))
 		{
 			
+			//(this->*my_map[result[1]])();
+
+			// std::map<std::string, void (Avm::*)(void)>::iterator it_map = my_map.find(result[1]);
 			std::map<std::string, funcptr>::iterator it_map = my_map.find(result[1]);
+			//auto func = my_map.find(result[1]);
 			if (it_map != my_map.end())
 			{
-				std::cout << it_map->first << " is command" << std::endl;
-				this->*(it_map->second)();
+			//	std::cout << it_map->first << " is command" << std::endl;
+				// auto func = it_map->second;
+				// ::*func();
+				(this->*(it_map->second))();
 			}
 			//iterating through result
 		}
