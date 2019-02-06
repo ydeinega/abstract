@@ -69,24 +69,29 @@ void	Avm::execute(void) {
 	std::regex	regex_2("[ \t]*(push|assert)[ \t]+(float|double)\\(([-]?[0-9]+\\.[0-9]+)\\)[ \t]*(;[\\w\\W]*)?");
 	std::regex	regex_3("[ \t]*(pop|dump|add|sub|mul|div|mod|print|exit|min|max|average|sort_asc|sort_desc)[ \t]*(;[\\w\\W]*)?");
 
-	typedef void (Avm::*funcptr)(void);
+	typedef void (Avm::*funcptr_1)(std::string, eOperandType);
+	typedef void (Avm::*funcptr_2)(void);
 	//std::map<std::string, void (Avm::*)(void)> my_map = {
-	std::map<std::string, funcptr> my_map = {
-	{ "push",		&Avm::push		},
-	{ "pop",		&Avm::pop		},
-	{ "dump", 		&Avm::dump		}
-	// { "assert",		&Avm::assert	}
-	// { "add",		4 },
-	// { "sub",		5 },
-	// { "mul",		6 },
-	// { "div",		7 },
-	// { "mod",		8 },
-	// { "print",		9 },
-	// { "min",		10 },
-	// { "max",		11 },
-	// { "average",	12 },
-	// { "sort_asc",	13 },
-	// { "sort_desc",	14 },
+	std::map<std::string, funcptr_1> map_1 = {
+		
+		{ "push",		&Avm::push		},
+		{ "assert",		&Avm::avm_assert	}
+	};
+
+	std::map<std::string, funcptr_2> map_2 = {
+
+		{ "pop",		&Avm::pop		},
+		{ "add",		&Avm::add		},
+		{ "sub",		&Avm::sub		},
+		{ "mul",		&Avm::mul		},
+		{ "div",		&Avm::div		},
+		{ "mod",		&Avm::mod		},
+		{ "print",		&Avm::print		},
+		{ "min",		&Avm::min		},
+		{ "max",		&Avm::max		},
+		{ "average",	&Avm::average	},
+		{ "sort_asc",	&Avm::sort_asc	},
+		{ "sort_desc",	&Avm::sort_desc	}
 	};
 
 	for(std::vector<std::string>::iterator it = _str.begin(); 
@@ -96,20 +101,13 @@ void	Avm::execute(void) {
 			std::regex_match(it->c_str(), result, regex_2) ||
 			std::regex_match(it->c_str(), result, regex_3))
 		{
-			
 			//(this->*my_map[result[1]])();
-
-			// std::map<std::string, void (Avm::*)(void)>::iterator it_map = my_map.find(result[1]);
-			std::map<std::string, funcptr>::iterator it_map = my_map.find(result[1]);
-			//auto func = my_map.find(result[1]);
-			if (it_map != my_map.end())
-			{
-			//	std::cout << it_map->first << " is command" << std::endl;
-				// auto func = it_map->second;
-				// ::*func();
-				(this->*(it_map->second))();
-			}
-			//iterating through result
+			std::map<std::string, funcptr_1>::iterator it_map_1 = map_1.find(result[1]);
+			std::map<std::string, funcptr_2>::iterator it_map_2 = map_2.find(result[1]);
+			if (it_map_1 != map_1.end())
+				(this->*(it_map_1->second))(result[3], getType(result[2]));
+			else if (it_map_2 != map_2.end())
+				(this->*(it_map_2->second))();
 		}
 	}
 }
@@ -120,7 +118,37 @@ void	Avm::print_str(void) {
 		std::cout << *it << std:: endl;
 }
 
+
+eOperandType	Avm::getType(std::string type) const {
+
+	std::map<std::string, eOperandType> map = {
+
+		{"int8", Int8},
+		{"int16", Int16},
+		{"int32", Int32},
+		{"float", Float},
+		{"double", Double}
+	};
+	std::map<std::string, eOperandType>::iterator it = map.find(type);
+	return (it->second);
+}
+
+void	Avm::push(std::string value, eOperandType type) {std::cout << "push is called" << std::endl; }
+void	Avm::avm_assert(std::string value, eOperandType type) {std::cout << "assert is called" << std::endl; }
+
 void	Avm::pop(void) {std::cout << "pop is called" << std::endl; }
+void	Avm::add(void) {std::cout << "add is called" << std::endl; }
+void	Avm::sub(void) {std::cout << "sub is called" << std::endl; }
+void	Avm::mul(void) {std::cout << "mul is called" << std::endl; }
+void	Avm::div(void) {std::cout << "div is called" << std::endl; }
+void	Avm::mod(void) {std::cout << "mod is called" << std::endl; }
 void	Avm::dump(void) {std::cout << "dump is called" << std::endl; }
-void	Avm::push(void) {std::cout << "push is called" << std::endl; }
-//void	Avm::assert(void) {std::cout << "assert is called" << std::endl; }
+void	Avm::print(void) {std::cout << "print is called" << std::endl; }
+void	Avm::exit(void) {std::cout << "exit is called" << std::endl; }
+
+void	Avm::min(void) {std::cout << "min is called" << std::endl; }
+void	Avm::max(void) {std::cout << "max is called" << std::endl; }
+void	Avm::average(void) {std::cout << "average is called" << std::endl; }
+void	Avm::sort_asc(void) {std::cout << "sort_asc is called" << std::endl; }
+void	Avm::sort_desc(void) {std::cout << "sort_desc is called" << std::endl; }
+

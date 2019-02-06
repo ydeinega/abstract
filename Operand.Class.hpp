@@ -14,11 +14,13 @@
 # define OPERAND_CLASS_HPP
 # include "IOperand.Class.hpp"
 
+
 template<typename T>
 class Operand : public IOperand {
 
 public:
 	Operand(void);
+	Operand(std::string str_value, eOperandType type);
 	//Operand(T value);it is a question what I will accept here as parameters
 	Operand(Operand const & src);
 	~Operand(void);
@@ -36,7 +38,10 @@ public:
 
 	std::string const & toString(void) const;
 
-	
+private:
+	std::string	str_value;
+	eOperandType type;
+	T value;
 };
 
 #endif

@@ -24,6 +24,15 @@
 //# include "Operand.Class.hpp"
 # include "AvmException.Class.hpp"
 
+enum eOperandType
+{
+	Int8,
+	Int16,
+	Int32,
+	Float,
+	Double 	
+};
+
 class Avm {
 
 public:
@@ -34,37 +43,33 @@ public:
 	
 	Avm &	operator=(Avm const & src);
 
-	void	pop(void);
-	void	dump(void);
-	void	push(void);
-	//void	assert(void);
-/*
-	void	push(std::string value);//here maybe i will need other things to accept
-	void	assert(std::string value) const;
+
+	void	push(std::string value, eOperandType type);
+	void	avm_assert(std::string value, eOperandType type);
 	void	pop(void);
 	void	add(void);
 	void	sub(void);
 	void	mul(void);
 	void	div(void);
 	void	mod(void);
-	void	dump(void) const;
-	void	print(void) const;
-	void	exit(void) const;
+	void	dump(void);
+	void	print(void);
+	void	exit(void);
 
-	// Bonuses 5 additional commands
-	void	min(void) const;
-	void	max(void) const;
-	void	average(void) const;
+	/* Bonuses 5 additional commands */
+	void	min(void);
+	void	max(void);
+	void	average(void);
 	void	sort_asc(void);
 	void	sort_desc(void);
 
 	
-*/
 	void	parse(std::string str);
 	void	execute(void);
 	void	print_str(void);
 	
-	
+	eOperandType getType(std::string type) const;
+
 private:
 	int							_stack_size;//when i push an element on stack i'll add one to it
 	//std::vector<IOperand> 		_stack;
