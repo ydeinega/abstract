@@ -20,18 +20,11 @@
 # include <regex>
 # include <exception>
 # include <map>
-//# include "IOperand.Class.hpp"
-//# include "Operand.Class.hpp"
+# include <stdexcept>
+# include "IOperand.Class.hpp"
+# include "Operand.Class.hpp"
 # include "AvmException.Class.hpp"
-
-enum eOperandType
-{
-	Int8,
-	Int16,
-	Int32,
-	Float,
-	Double 	
-};
+# include "Factory.Class.hpp"
 
 class Avm {
 
@@ -66,17 +59,17 @@ public:
 	
 	void	parse(std::string str);
 	void	execute(void);
-	void	print_str(void);
+
+    /* For Debugging */
+    void	print_str(void);
+    void    print_vector(void);
 	
 	eOperandType getType(std::string type) const;
 
 private:
-	int							_stack_size;//when i push an element on stack i'll add one to it
-	//std::vector<IOperand> 		_stack;
+	std::vector<const IOperand *> 		_stack;
 	int							_line;
 	std::vector<std::string>	_str;
-	//vector in which i'll store all the strings
-	//vector in which i'll store ioperands (when i start pushing on stack)
 	
 };
 

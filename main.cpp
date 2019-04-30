@@ -18,27 +18,26 @@ int		main(int argc, char **argv)
 	std::string str;
 	Avm vm;
 
+    //argc == 1 when we read from stdin
 	if (argc == 1)
 	{
-		//here it is different i need to check for ;; - it is end of str
-		//I will look for it in the string later maybe
 		while (std::getline(std::cin, str))
 		{
-			
 			if (str == ";;")
 				break ;
 			vm.parse(str);
 			// std::cout << str << std::endl;
 		}
-	}
+	} //argc == 2 when we read from a file
 	else if (argc == 2)
 	{
+        //what happens when the file doesn't exist?
 		std::ifstream ifs(argv[1]);
 		while (std::getline(ifs, str))
 		{
 			vm.parse(str);
 		}
-			// std::cout << str << std::endl;
+        // std::cout << str << std::endl;
 	}
 	else
 		std::cout	<< "Too many arguments. "
@@ -53,4 +52,5 @@ int		main(int argc, char **argv)
 	// }
 	//vm.print_str();
 	vm.execute();
+	//vm.print_vector();
 }

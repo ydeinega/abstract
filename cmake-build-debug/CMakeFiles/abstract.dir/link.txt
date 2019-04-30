@@ -1,0 +1,1 @@
+/Library/Developer/CommandLineTools/usr/bin/c++   -g -Wl,-search_paths_first -Wl,-headerpad_max_install_names  CMakeFiles/abstract.dir/Avm.Class.cpp.o CMakeFiles/abstract.dir/AvmException.Class.cpp.o CMakeFiles/abstract.dir/main.cpp.o CMakeFiles/abstract.dir/Factory.cpp.o CMakeFiles/abstract.dir/Operand.cpp.o  -o abstract 

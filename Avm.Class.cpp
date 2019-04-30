@@ -14,7 +14,7 @@
 
 /* Canonical Form */
 
-Avm::Avm(void) : _stack_size(0), _line(0) {}
+Avm::Avm(void) : _line(0) {}
 
 Avm::~Avm(void) {}
 
@@ -86,7 +86,9 @@ void	Avm::execute(void) {
 		{ "mul",		&Avm::mul		},
 		{ "div",		&Avm::div		},
 		{ "mod",		&Avm::mod		},
+        { "dump",		&Avm::dump		},
 		{ "print",		&Avm::print		},
+        { "exit",		&Avm::exit		},
 		{ "min",		&Avm::min		},
 		{ "max",		&Avm::max		},
 		{ "average",	&Avm::average	},
@@ -133,16 +135,58 @@ eOperandType	Avm::getType(std::string type) const {
 	return (it->second);
 }
 
-void	Avm::push(std::string value, eOperandType type) {std::cout << "push is called" << std::endl; }
+void	Avm::push(std::string value, eOperandType type) {
+
+	Factory factory;
+
+    try {
+    	_stack.push_back(factory.createOperand(type, value));
+    }
+    catch(std::invalid_argument & e) {
+    	std::cout << e.what() << std::endl;
+    }
+    catch(std::out_of_range & e) {
+    	std::cout << e.what() << std::endl;
+    }
+    catch(std::exception & e) {
+    	std::cout << e.what() << std::endl;
+    }
+}
+
 void	Avm::avm_assert(std::string value, eOperandType type) {std::cout << "assert is called" << std::endl; }
 
 void	Avm::pop(void) {std::cout << "pop is called" << std::endl; }
-void	Avm::add(void) {std::cout << "add is called" << std::endl; }
+
+void	Avm::add(void) {
+
+	std::cout << "add is called" << std::endl;
+	int size;
+
+	size = _stack.size();
+	if (size < 2) {
+		std::cout << "Error. Need to throw exception" << std::endl;
+	}
+	const IOperand * operand = *(_stack[size - 1]) + *(_stack[size - 2]);
+	_stack.pop_back();
+	_stack.pop_back();
+	_stack.push_back(operand);
+
+}
+
 void	Avm::sub(void) {std::cout << "sub is called" << std::endl; }
 void	Avm::mul(void) {std::cout << "mul is called" << std::endl; }
 void	Avm::div(void) {std::cout << "div is called" << std::endl; }
 void	Avm::mod(void) {std::cout << "mod is called" << std::endl; }
-void	Avm::dump(void) {std::cout << "dump is called" << std::endl; }
+
+void	Avm::dump(void) {
+	
+	std::cout << "dump is called" << std::endl;
+	if (_stack.size() == 0)
+		std::cout << "Nothing to dump. The stack is empty" << std::endl;
+	else
+		print_vector();
+}
+
 void	Avm::print(void) {std::cout << "print is called" << std::endl; }
 void	Avm::exit(void) {std::cout << "exit is called" << std::endl; }
 
@@ -151,4 +195,12 @@ void	Avm::max(void) {std::cout << "max is called" << std::endl; }
 void	Avm::average(void) {std::cout << "average is called" << std::endl; }
 void	Avm::sort_asc(void) {std::cout << "sort_asc is called" << std::endl; }
 void	Avm::sort_desc(void) {std::cout << "sort_desc is called" << std::endl; }
+
+void    Avm::print_vector(void) {
+     for (int i = _stack.size() - 1; i >= 0 ; i--)
+     {
+     	std::cout << _stack[i]->toString() << std::endl;
+     	//std::cout << std::stoi(_stack[i]->toString()) << std::endl;
+     }
+}
 
