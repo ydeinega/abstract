@@ -19,3 +19,24 @@ const char * AvmException::BasicError::what() const throw() {
 
 	return("Lexical/syntactic error or unknown instruction");
 }
+
+const char * AvmException::EmptyStackError::what() const throw() { 
+
+	return("Empty stack");
+}
+
+const char * AvmException::LessThanTwoError::what() const throw() { 
+
+	return("Less than two members in a stack");
+}
+
+const char * AvmException::DivisionByZero::what() const throw() { 
+
+	return("Division by zero");
+}
+
+const char * AvmException::AssertFailure::what() const throw() { 
+
+	return("Assert failed");
+}
+

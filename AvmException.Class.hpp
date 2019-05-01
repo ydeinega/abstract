@@ -27,8 +27,29 @@ public:
 		virtual const char *what() const throw();
 	};
 	
+	class EmptyStackError : public std::exception {
 
+	public:
+		virtual const char *what() const throw();
+	};
 
+	class LessThanTwoError : public std::exception {
+
+	public:
+		virtual const char *what() const throw();
+	};
+
+	class DivisionByZero : public std::exception {
+
+	public:
+		virtual const char *what() const throw();
+	};
+
+	class AssertFailure : public std::exception {
+
+	public:
+		virtual const char *what() const throw();
+	};
 };
 
 #endif

@@ -12,8 +12,6 @@
 
 #include "Avm.Class.hpp"
 
-/* Canonical Form */
-
 Avm::Avm(void) : _line(0) {}
 
 Avm::~Avm(void) {}
@@ -23,7 +21,6 @@ Avm::Avm(Avm const & src) {
 	*this = src;
 }
 
-//don't forget to realize equals operator
 Avm & Avm::operator=(Avm const & src) {
 
 	return *this;
@@ -53,12 +50,6 @@ void	Avm::parse(std::string str) {
 		std::cout << "Line " << _line << " : " << e.what() << std::endl;
 	}
 	_str.push_back(str);
-
-	//iterating through result
-	// for(int i = 0; i < result.size(); i++)
-	// {
-	// 	std::cout << i << " = " << result[i] << std::endl;
-	// }
 }
 
 void	Avm::execute(void) {
@@ -71,7 +62,7 @@ void	Avm::execute(void) {
 
 	typedef void (Avm::*funcptr_1)(std::string, eOperandType);
 	typedef void (Avm::*funcptr_2)(void);
-	//std::map<std::string, void (Avm::*)(void)> my_map = {
+
 	std::map<std::string, funcptr_1> map_1 = {
 		
 		{ "push",		&Avm::push		},
@@ -103,13 +94,19 @@ void	Avm::execute(void) {
 			std::regex_match(it->c_str(), result, regex_2) ||
 			std::regex_match(it->c_str(), result, regex_3))
 		{
-			//(this->*my_map[result[1]])();
 			std::map<std::string, funcptr_1>::iterator it_map_1 = map_1.find(result[1]);
 			std::map<std::string, funcptr_2>::iterator it_map_2 = map_2.find(result[1]);
-			if (it_map_1 != map_1.end())
-				(this->*(it_map_1->second))(result[3], getType(result[2]));
-			else if (it_map_2 != map_2.end())
-				(this->*(it_map_2->second))();
+			try
+			{
+				if (it_map_1 != map_1.end())
+					(this->*(it_map_1->second))(result[3], getType(result[2]));
+				else if (it_map_2 != map_2.end())
+					(this->*(it_map_2->second))();
+			}
+			catch (std::exception & e)
+			{
+				std::cout << e.what() << std::endl;
+			}
 		}
 	}
 }
@@ -153,30 +150,96 @@ void	Avm::push(std::string value, eOperandType type) {
     }
 }
 
-void	Avm::avm_assert(std::string value, eOperandType type) {std::cout << "assert is called" << std::endl; }
+void	Avm::avm_assert(std::string value, eOperandType type) {
+	
+	IOperand const *top;
 
-void	Avm::pop(void) {std::cout << "pop is called" << std::endl; }
+	top = NULL;
+	if(_stack.size() == 0)
+		throw AvmException::EmptyStackError();
+	top = _stack.back();
+	if(top->getType() != type || top->toString() != value)
+		throw AvmException::AssertFailure();
+}
+
+void	Avm::pop(void) {
+
+	if (_stack.size() == 0)
+		throw AvmException::EmptyStackError();
+	_stack.pop_back();
+}
 
 void	Avm::add(void) {
 
-	std::cout << "add is called" << std::endl;
 	int size;
 
 	size = _stack.size();
 	if (size < 2) {
-		std::cout << "Error. Need to throw exception" << std::endl;
+		throw AvmException::LessThanTwoError();
 	}
-	const IOperand * operand = *(_stack[size - 1]) + *(_stack[size - 2]);
+	const IOperand * operand = *(_stack[size - 2]) + *(_stack[size - 1]);
 	_stack.pop_back();
 	_stack.pop_back();
 	_stack.push_back(operand);
 
 }
 
-void	Avm::sub(void) {std::cout << "sub is called" << std::endl; }
-void	Avm::mul(void) {std::cout << "mul is called" << std::endl; }
-void	Avm::div(void) {std::cout << "div is called" << std::endl; }
-void	Avm::mod(void) {std::cout << "mod is called" << std::endl; }
+void	Avm::sub(void) {
+
+	int size;
+
+	size = _stack.size();
+	if (size < 2) {
+		throw AvmException::LessThanTwoError();
+	}
+	const IOperand * operand = *(_stack[size - 2]) - *(_stack[size - 1]);
+	_stack.pop_back();
+	_stack.pop_back();
+	_stack.push_back(operand);
+}
+
+void	Avm::mul(void) {
+	
+	int size;
+
+	size = _stack.size();
+	if (size < 2) {
+		throw AvmException::LessThanTwoError();
+	}
+	const IOperand * operand = *(_stack[size - 2]) * *(_stack[size - 1]);
+	_stack.pop_back();
+	_stack.pop_back();
+	_stack.push_back(operand);
+}
+
+void	Avm::div(void) {
+
+	int size;
+
+	size = _stack.size();
+	if (size < 2) {
+		throw AvmException::LessThanTwoError();
+	}
+	const IOperand * operand = *(_stack[size - 2]) / *(_stack[size - 1]);
+	_stack.pop_back();
+	_stack.pop_back();
+	_stack.push_back(operand);
+}
+
+void	Avm::mod(void) {
+
+	std::cout << "mod is called" << std::endl;
+	int size;
+
+	size = _stack.size();
+	if (size < 2) {
+		throw AvmException::LessThanTwoError();
+	}
+	const IOperand * operand = *(_stack[size - 2]) % *(_stack[size - 1]);
+	_stack.pop_back();
+	_stack.pop_back();
+	_stack.push_back(operand);
+}
 
 void	Avm::dump(void) {
 	
@@ -187,8 +250,21 @@ void	Avm::dump(void) {
 		print_vector();
 }
 
-void	Avm::print(void) {std::cout << "print is called" << std::endl; }
-void	Avm::exit(void) {std::cout << "exit is called" << std::endl; }
+void	Avm::print(void) {
+
+	IOperand const *top;
+
+	top = NULL;
+	if(_stack.size() == 0)
+		throw AvmException::EmptyStackError();
+	top = _stack.back();
+	avm_assert(top->toString(), Int8);
+	std::cout << static_cast<char>(std::stoi(top->toString()));
+}
+
+void	Avm::exit(void) {
+	//std::cout << "exit is called" << std::endl; 
+}
 
 void	Avm::min(void) {std::cout << "min is called" << std::endl; }
 void	Avm::max(void) {std::cout << "max is called" << std::endl; }
@@ -200,7 +276,6 @@ void    Avm::print_vector(void) {
      for (int i = _stack.size() - 1; i >= 0 ; i--)
      {
      	std::cout << _stack[i]->toString() << std::endl;
-     	//std::cout << std::stoi(_stack[i]->toString()) << std::endl;
      }
 }
 

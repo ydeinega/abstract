@@ -14,6 +14,8 @@
 # define OPERAND_CLASS_HPP
 # include "IOperand.Class.hpp"
 # include "Factory.Class.hpp"
+# include "AvmException.Class.hpp"
+# include <cmath> 
 
 
 template<typename T>
@@ -82,7 +84,6 @@ public:
 		}
 	}
 
-//DIVISION BY 0
 	IOperand const * operator/(IOperand const & rhs) const {
 		
 		Factory			factory;
@@ -92,31 +93,38 @@ public:
 		precision = getPrecision() > rhs.getPrecision() ? getPrecision() : rhs.getPrecision();
 		type = getPrecision() > rhs.getPrecision() ? getType() : rhs.getType();
 		if (precision <= 2) {
+			if (std::stoi(rhs.toString()) == 0)
+				throw AvmException::DivisionByZero();
 			int calc = std::stoi(toString()) / std::stoi(rhs.toString());
 			return factory.createOperand(type, std::to_string(calc));
 		}
 		else {
+			// if (std::stod(rhs.toString()) == 0.0)
+			// 	throw AvmException::DivisionByZero();
 			double calc = std::stod(toString()) / std::stod(rhs.toString());
 			return factory.createOperand(type, std::to_string(calc));
 		}
 	}
 
-//DIVISION BY 0 = denis code
 	IOperand const * operator%(IOperand const & rhs) const {
-		// Factory			factory;
-		// int				precision;
-		// eOperandType	type;
+		Factory			factory;
+		int				precision;
+		eOperandType	type;
 
-		// precision = getPrecision() > rhs.getPrecision() ? getPrecision() : rhs.getPrecision();
-		// type = getPrecision() > rhs.getPrecision() ? getType() : rhs.getType();
-		// if (precision <= 2) {
-		// 	int calc = std::stoi(toString()) % std::stoi(rhs.toString());
-		// 	return factory.createOperand(type, std::to_string(calc));
-		// }
-		// else {
-		// 	double calc = std::stod(toString()) % std::stod(rhs.toString());
-		// 	return factory.createOperand(type, std::to_string(calc));
-		// }
+		precision = getPrecision() > rhs.getPrecision() ? getPrecision() : rhs.getPrecision();
+		type = getPrecision() > rhs.getPrecision() ? getType() : rhs.getType();
+		if (precision <= 2) {
+			if (std::stoi(rhs.toString()) == 0)
+				throw AvmException::DivisionByZero();
+			int calc = std::stoi(toString()) % std::stoi(rhs.toString());
+			return factory.createOperand(type, std::to_string(calc));
+		}
+		else {
+			// if (std::stod(rhs.toString()) == 0.0)
+			// 	throw AvmException::DivisionByZero();
+			double calc = std::fmod(std::stod(toString()), std::stod(rhs.toString()));
+			return factory.createOperand(type, std::to_string(calc));
+		}
 		return this;
 	}
 
