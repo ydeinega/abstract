@@ -20,6 +20,7 @@
 # include <regex>
 # include <exception>
 # include <map>
+# include <cstdlib>
 # include <stdexcept>
 # include "IOperand.Class.hpp"
 # include "Operand.Class.hpp"
@@ -49,14 +50,6 @@ public:
 	void	print(void);
 	void	exit(void);
 
-	/* Bonuses 5 additional commands */
-	void	min(void);
-	void	max(void);
-	void	average(void);
-	void	sort_asc(void);
-	void	sort_desc(void);
-
-	
 	void	parse(std::string str);
 	void	execute(void);
 
@@ -65,11 +58,15 @@ public:
     void    print_vector(void);
 	
 	eOperandType getType(std::string type) const;
+	bool getExit(void) const;
+	std::vector<const IOperand *> getStack(void) const;
+	std::vector<std::string> getVectorStr(void) const;
 
 private:
-	std::vector<const IOperand *> 		_stack;
-	int							_line;
-	std::vector<std::string>	_str;
+	std::vector<const IOperand *> 	_stack;
+	int								_line;
+	std::vector<std::string>		_str;
+	bool							_exit;
 	
 };
 

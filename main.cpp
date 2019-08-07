@@ -33,6 +33,7 @@ int		main(int argc, char **argv)
 		{
 			while (std::getline(ifs, str))
 				vm.parse(str);
+			ifs.close();
 		}
 		else
 			std::cout << "Failure to open a file " << argv[1] << std::endl; 
@@ -44,4 +45,6 @@ int		main(int argc, char **argv)
 					<< std::endl;
 
 	vm.execute();
+	if (!vm.getExit())
+		std::cout << "No exit instruction" << std::endl;
 }

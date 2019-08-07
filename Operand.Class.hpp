@@ -12,22 +12,32 @@
 
 #ifndef OPERAND_CLASS_HPP
 # define OPERAND_CLASS_HPP
+
 # include "IOperand.Class.hpp"
 # include "Factory.Class.hpp"
 # include "AvmException.Class.hpp"
 # include <cmath> 
-
 
 template<typename T>
 class Operand : public IOperand {
 
 public:
 	Operand(T value, eOperandType type, std::string str_value) : value(value), type(type), str_value(str_value) {}
+	
 	~Operand(void) {}
-    Operand(Operand const & src) {}
-	Operand &       operator=(Operand const & src) { return *this; }
+    
+    Operand(Operand const & src) {
+    	*this = src;
+    }
+	
+	Operand &       operator=(Operand const & src) {
+		this->type = src.getType();
+		this->str_value = src.toString();
+		return *this;
+	}
 
 	int				getPrecision(void) const { return type; }
+
 	eOperandType	getType(void) const { return type; }
 	
 	IOperand const * operator+(IOperand const & rhs) const {
@@ -99,8 +109,6 @@ public:
 			return factory.createOperand(type, std::to_string(calc));
 		}
 		else {
-			// if (std::stod(rhs.toString()) == 0.0)
-			// 	throw AvmException::DivisionByZero();
 			double calc = std::stod(toString()) / std::stod(rhs.toString());
 			return factory.createOperand(type, std::to_string(calc));
 		}
@@ -120,8 +128,6 @@ public:
 			return factory.createOperand(type, std::to_string(calc));
 		}
 		else {
-			// if (std::stod(rhs.toString()) == 0.0)
-			// 	throw AvmException::DivisionByZero();
 			double calc = std::fmod(std::stod(toString()), std::stod(rhs.toString()));
 			return factory.createOperand(type, std::to_string(calc));
 		}
@@ -138,9 +144,9 @@ public:
 
 private:
     Operand(void) {}
-	std::string	str_value;
-	eOperandType type;
 	T value;
+	eOperandType type;
+	std::string	str_value;
 };
 
 #endif

@@ -12,9 +12,12 @@
 
 #include "Avm.Class.hpp"
 
-Avm::Avm(void) : _line(0) {}
+Avm::Avm(void) : _line(0), _exit(false) {}
 
-Avm::~Avm(void) {}
+Avm::~Avm(void) {
+	_stack.clear();
+	_str.clear();
+}
 
 Avm::Avm(Avm const & src) {
 
@@ -23,6 +26,8 @@ Avm::Avm(Avm const & src) {
 
 Avm & Avm::operator=(Avm const & src) {
 
+	_stack = src.getStack();
+	_str = src.getVectorStr();
 	return *this;
 }
 
@@ -79,14 +84,11 @@ void	Avm::execute(void) {
 		{ "mod",		&Avm::mod		},
         { "dump",		&Avm::dump		},
 		{ "print",		&Avm::print		},
-        { "exit",		&Avm::exit		},
-		{ "min",		&Avm::min		},
-		{ "max",		&Avm::max		},
-		{ "average",	&Avm::average	},
-		{ "sort_asc",	&Avm::sort_asc	},
-		{ "sort_desc",	&Avm::sort_desc	}
+        { "exit",		&Avm::exit		}
 	};
 
+	if (_str.empty())
+		_exit = true;
 	for(std::vector<std::string>::iterator it = _str.begin(); 
 		it != _str.end(); ++it)
 	{
@@ -131,6 +133,8 @@ eOperandType	Avm::getType(std::string type) const {
 	std::map<std::string, eOperandType>::iterator it = map.find(type);
 	return (it->second);
 }
+
+bool	Avm::getExit(void) const { return _exit; }
 
 void	Avm::push(std::string value, eOperandType type) {
 
@@ -228,7 +232,6 @@ void	Avm::div(void) {
 
 void	Avm::mod(void) {
 
-	std::cout << "mod is called" << std::endl;
 	int size;
 
 	size = _stack.size();
@@ -243,7 +246,6 @@ void	Avm::mod(void) {
 
 void	Avm::dump(void) {
 	
-	std::cout << "dump is called" << std::endl;
 	if (_stack.size() == 0)
 		std::cout << "Nothing to dump. The stack is empty" << std::endl;
 	else
@@ -263,14 +265,9 @@ void	Avm::print(void) {
 }
 
 void	Avm::exit(void) {
-	//std::cout << "exit is called" << std::endl; 
+	_exit = true;
+	std::exit(0);
 }
-
-void	Avm::min(void) {std::cout << "min is called" << std::endl; }
-void	Avm::max(void) {std::cout << "max is called" << std::endl; }
-void	Avm::average(void) {std::cout << "average is called" << std::endl; }
-void	Avm::sort_asc(void) {std::cout << "sort_asc is called" << std::endl; }
-void	Avm::sort_desc(void) {std::cout << "sort_desc is called" << std::endl; }
 
 void    Avm::print_vector(void) {
      for (int i = _stack.size() - 1; i >= 0 ; i--)
@@ -279,3 +276,10 @@ void    Avm::print_vector(void) {
      }
 }
 
+std::vector<const IOperand *> Avm::getStack(void) const {
+	return _stack;
+}
+
+std::vector<std::string> Avm::getVectorStr(void) const {
+	return _str;
+} 

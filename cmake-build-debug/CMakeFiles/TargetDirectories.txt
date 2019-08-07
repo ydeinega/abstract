@@ -1,3 +1,0 @@
-/nfs/2017/y/ydeineha/abstract/cmake-build-debug/CMakeFiles/edit_cache.dir
-/nfs/2017/y/ydeineha/abstract/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/nfs/2017/y/ydeineha/abstract/cmake-build-debug/CMakeFiles/abstract.dir
